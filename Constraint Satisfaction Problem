@@ -1,0 +1,20 @@
+graph = {'WA':'NT SA','NT':'WA SA Q','SA':'WA NT Q NSW V','Q':'NT SA NSW','NSW':'SA Q V','V':'SA NSW','T':''}
+colors, a = ['R','G','B'], {}
+state_names = {'WA':'Western Australia','NT':'Northern Territory','SA':'South Australia','Q':'Queensland','NSW':'New South Wales','V':'Victoria','T':'Tasmania'}
+color_names = {'R':'Red','G':'Green','B':'Blue'}
+
+def solve(s):
+    if s == len(graph): return True
+    x = list(graph)[s]
+    for c in colors:
+        if all(a.get(n) != c for n in graph[x].split()):
+            a[x] = c
+            if solve(s+1): return True
+            del a[x]
+    return False
+
+solve(0)
+print("Original Output:\n", a)
+print("\nAustralian Map Coloring Solution:\n" + "-"*40)
+for state in graph:
+    print(f"{state_names[state]} ({state}) --> {color_names[a[state]]}")
