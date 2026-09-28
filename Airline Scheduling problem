@@ -1,0 +1,52 @@
+flights = ["Flight 1", "Flight 2", "Flight 3"]
+aircraft = ["Aircraft 1", "Aircraft 2"]
+time_slots = ["8:00 AM", "10:00 AM", "12:00 PM"]
+crew = ["Crew 1", "Crew 2"]
+
+maintenance = {
+    "Aircraft 1": ["10:00 AM"],
+    "Aircraft 2": []
+}
+schedule = {}
+def schedule_flights(i):
+   
+    if i == len(flights):
+        return True
+    flight = flights[i]
+    for a in aircraft:
+        for t in time_slots:
+            for c in crew:
+                
+                aircraft_used = any(
+                    x["aircraft"] == a and x["time"] == t
+                    for x in schedule.values()
+                )
+                crew_used = any(
+                    x["crew"] == c and x["time"] == t
+                    for x in schedule.values()
+                )
+                under_maintenance = t in maintenance[a]
+                if not aircraft_used and not crew_used and not under_maintenance:
+                     
+                    schedule[flight] = {
+                        "aircraft": a,
+                        "time": t,
+                        "crew": c
+                    }
+            
+                    if schedule_flights(i + 1):
+                        return True
+                   
+                    del schedule[flight]
+    return False
+if schedule_flights(0):
+    print("FINAL FLIGHT SCHEDULE")
+    print("---------------------")
+    for flight in flights:
+        x = schedule[flight]
+        print(
+            f"{flight} → Aircraft: {x['aircraft']} | "
+            f"Time: {x['time']} | Crew: {x['crew']}"
+        )
+else:
+    print("No valid schedule found.")
