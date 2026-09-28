@@ -1,0 +1,52 @@
+import heapq
+
+def a_star(graph, start, goal, heuristic):
+    """
+    graph: Dictionary representing the graph
+           Format: {node: [(neighbor, cost), ...]}
+    start: Starting node
+    goal: Goal node
+    heuristic: Dictionary containing heuristic values
+    """
+    open_list = []
+    heapq.heappush(open_list, (heuristic[start], 0, start))
+
+    came_from = {}
+    g_cost = {start: 0}
+
+    while open_list:
+        f, current_g, current = heapq.heappop(open_list)
+
+        if current == goal:
+            path = [current]
+            while current in came_from:
+                current = came_from[current]
+                path.append(current)
+            return path[::-1], g_cost[goal]
+
+        for neighbor, cost in graph[current]:
+            tentative_g = current_g + cost
+
+            if neighbor not in g_cost or tentative_g < g_cost[neighbor]:
+                g_cost[neighbor] = tentative_g
+                f_cost = tentative_g + heuristic[neighbor]
+                heapq.heappush(open_list, (f_cost, tentative_g, neighbor))
+                came_from[neighbor] = current
+
+    return None, float("inf")
+
+
+graph = {'A': [('B', 1), ('C', 3)],'B': [('D', 3), ('E', 6)],'C': [('F', 5)],'D': [('G', 2)],'E': [('G', 1)],'F': [('G', 2)],'G': []}
+
+heuristic = {'A': 6,'B': 5,'C': 4,'D': 2,'E': 1,'F': 2,'G': 0}
+
+start = 'A'
+goal = 'G'
+
+path, cost = a_star(graph, start, goal, heuristic)
+
+if path:
+    print("Shortest Path:", " -> ".join(path))
+    print("Total Cost:", cost)
+else:
+    print("No path found.")
