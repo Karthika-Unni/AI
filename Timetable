@@ -1,0 +1,33 @@
+c={"CN":["Agn","Bob"],"TOC":["Agn","Cia"],"AGA":["Bob","Deb"],
+   "ML":["Cia","Deb"],"ANN":["Agn","Deb"]}
+
+t=["9:00-10:00","10:00-11:00","11:00-12:00"]; r=["A","B","C"]
+d={x:[(y,z) for y in t for z in r] for x in c}
+
+def ok(x,v,a):
+    for q,w in a.items():
+        if v[0]==w[0] and (v[1]==w[1] or set(c[x])&set(c[q])): return False
+    return True
+
+def solve(a):
+    if len(a)==len(c): return a
+    x=next(x for x in c if x not in a)
+    for v in d[x]:
+        if ok(x,v,a):
+            a[x]=v
+            if solve(a): return a
+            del a[x]
+    return None
+
+ans=solve({})
+
+if ans:
+    print("\nVALID TIMETABLE")
+    print("="*55)
+    print(f"{'Class':<12}{'Time':<15}{'Room'}")
+    print("="*55)
+    for x,v in ans.items():
+        print(f"{x:<12}{v[0]:<15}{v[1]}")
+    print("="*55)
+else:
+    print("No valid timetable found.")
